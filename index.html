@@ -3,84 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        canvas {
-            border: 1px solid #000;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <title>Damped Pendulum</title>
 </head>
 <body>
+    <div id="controlls_container">
+        <div class="controll">
+            <label>Damping Factor</label>
+            <input type="range" min="0" max="1" step="0.1" onchange="update_factor(this.value)">
+        </div>
+        <div class="controll">
+            <label>Rod Lenght (cm)</label>
+            <input type="range" min="10" max="200" step="10" onchange="update_rod_lenght(this.value)">
+        </div>
+        <div class="controll">
+            <label>Gravity</label>
+            <input type="range" min="1" max="20" onchange="update_gravity(this.value)">
+        </div>
+        <div class="controll">
+            <button onclick="restart()">Restart</button>
+        </div>
+    </div>
     <canvas id="pendulumCanvas" width="400" height="400"></canvas>
 
-    <script>
-        const canvas = document.getElementById("pendulumCanvas");
-        const ctx = canvas.getContext("2d");
-
-        // Pendulum properties
-        const pivotX = canvas.width / 2;
-        const pivotY = 50;
-        let angle = Math.PI / 2; // Initial angle
-        let angularVelocity = 0.0;
-        const dampingFactor = 0.5; // Damping factor
-        const rodLength = 100;
-        const bobRadius = 20;
-        const gravity = 9.8; // Gravity strength
-        const timefactor = 0.17; // the less it is .. more the time it takes
-        const timeStep = timefactor/Math.sqrt(rodLength); // Time step
-        let direction = 1;
-        let start=0 , end=0;
-
-        function drawPendulum() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw pivot point
-            ctx.beginPath();
-            ctx.arc(pivotX, pivotY, 5, 0, 2 * Math.PI);
-            ctx.fillStyle = "#000";
-            ctx.fill();
-
-            // Draw pendulum rod
-            const pendulumX = pivotX + rodLength * Math.sin(angle);
-            const pendulumY = pivotY + rodLength * Math.cos(angle);
-
-            ctx.beginPath();
-            ctx.moveTo(pivotX, pivotY);
-            ctx.lineTo(pendulumX, pendulumY);
-            ctx.strokeStyle = "#000";
-            ctx.stroke();
-
-            // Draw pendulum bob
-            ctx.beginPath();
-            ctx.arc(pendulumX, pendulumY, bobRadius, 0, 2 * Math.PI);
-            ctx.fillStyle = "#3498db";
-            ctx.fill();
-        }
-
-        function updatePendulum() {
-
-            const acceleration = (-gravity) * Math.sin(angle) - dampingFactor * angularVelocity;
-            angularVelocity += acceleration * timeStep;
-            angle += angularVelocity * timeStep;
-
-            if(direction != Math.sign(angularVelocity)){
-                direction = Math.sign(angularVelocity);
-                end = new Date();
-                end= end.getTime();
-                console.log("time : "+(end-start));
-                start = new Date();
-                start = start.getTime();
-            }
-
-            drawPendulum();
-        }
-
-        function animate() {
-            updatePendulum();
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
